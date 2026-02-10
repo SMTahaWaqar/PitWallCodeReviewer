@@ -8,6 +8,11 @@ import { buildMockReview } from "@/lib/review/mockReview";
 import { Review } from "@/lib/review/types";
 import { useState } from "react";
 
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+
 export default function Home() {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("TypeScript");
@@ -15,13 +20,35 @@ export default function Home() {
   const [review, setReview] = useState<Review | null>(null);
   const [useAI, setUseAI] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    setError(null);
     setIsLoading(true);
-    setTimeout(() => {
-      setReview(buildMockReview(code))
-      setIsLoading(false)
-    }, 5200);
+
+    try {
+      if (!useAI) {
+        await wait(2200);
+        setReview(buildMockReview(code));
+        return;
+      }
+      await wait(2000);
+
+      const res = await fetch("/api/review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, language, objective }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "AI request failed");
+
+      setReview(data.review);
+    } catch (e: any) {
+      setError(e?.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function Pill({ children }: { children: React.ReactNode }) {
@@ -35,18 +62,18 @@ export default function Home() {
 
   return (
     <PitWallLayout
-      title="Pitwall Review"
-      subtitle="F1-themed feedback for your code"
+      title="Pitwall Code Review"
+      subtitle="OpenAI x NextJs"
       rightSlot={<StartingLights active={isLoading} />}
       subheaderSlot={
-        <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-zinc-950/40 px-3 py-2">
+        <div className="relative z-20 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-zinc-950/40 px-3 py-2">
           <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-200">
             SESSION: QUALI ANALYSIS
           </span>
           <button
             type="button"
             onClick={() => setUseAI((v) => !v)}
-            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200 hover:bg-white/10"
+            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200 hover:bg-white/10 cursor-pointer"
           >
             Mode: <span className="text-zinc-50">{useAI ? "AI" : "Mock"}</span>
           </button>
@@ -63,9 +90,6 @@ export default function Home() {
       }
     >
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* <section className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          Left panel placeholder
-        </section> */}
         <CodeInputPanel
           code={code}
           onCodeChange={setCode}
@@ -77,7 +101,14 @@ export default function Home() {
           isLoading={isLoading}
         />
 
-        <ReviewPanel review={review} />
+        <div className="space-y-3">
+          <ReviewPanel review={review} />
+          {error ? (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+              {error}
+            </div>
+          ) : null}
+        </div>
       </div>
     </PitWallLayout>
   );

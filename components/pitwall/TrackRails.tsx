@@ -9,7 +9,7 @@ export default function TrackRails() {
                 <div className="rail rail-up" />
             </div>
 
-            <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_10%, rgba(255,255,255,0.06),transparent_60%0]" />
+            <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_10%, rgba(255,255,255,0.06),transparent_60%0] pointer-events-none" />
         </div>
     );
 }

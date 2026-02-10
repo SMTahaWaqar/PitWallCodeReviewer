@@ -48,6 +48,10 @@ export default function ReviewPanel({ review }: { review: Review | null }) {
                     <p className="mt-2 text-sm text-zinc-500">
                         Paste code and send it to the Pit Wall. You'll get Strategy, Reliability, Performance, Maintainability.
                     </p>
+                    <p className="mt-4 text-xs text-zinc-500">
+                        Tip: try a NestJS service method, a React component, or a Mongo aggregation.
+                    </p>
+
                 </div>
             ) : (
                 <div className="space-y-5">
