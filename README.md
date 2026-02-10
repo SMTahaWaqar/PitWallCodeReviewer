@@ -1,4 +1,4 @@
-# PitWall Review 🏎️
+# PitWall Code Review 🏎️
 
 An F1-inspired code review tool that turns raw code into structured, actionable feedback.
 
