@@ -41,7 +41,7 @@ export default function PitWallLayout({
                 <div className="mt-8">{children}</div>
 
                 <footer className="mt-10 text-center text-xs text-zinc-600">
-                    Built on a Sunday evening sprint
+                    Built on a Sunday evening sprint By Taha
                 </footer>
             </div>
         </main>

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PitWall Review | By Taha",
+  title: "PitWall Review | AI Code Review Tool",
   description: "An AI-powered code review tool built with Next.js and OpenAI.",
 };
 

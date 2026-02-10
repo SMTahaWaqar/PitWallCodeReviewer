@@ -84,7 +84,7 @@ export default function Home() {
           <Pill>v0.1</Pill>
 
           <span className="text-xs text-zinc-500">
-            {useAI ? "AI will be enabled next" : "Mock mode (instant feedback)"}
+            {useAI ? "AI is now enabled" : "Mock mode (instant feedback)"}
           </span>
         </div>
       }
